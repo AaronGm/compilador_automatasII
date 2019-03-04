@@ -5,7 +5,7 @@
  */
 package analizador;
 
-import analizador.simbolos.CaracteresEsp;
+import analizador.simbolos.CaracteresEspeciales;
 import analizador.simbolos.Reservadas;
 import analizador.simbolos.TipoDato;
 import analizador.simbolos.VarConst;
@@ -53,7 +53,7 @@ public class Lexico {
                     
                 } else {
                     
-                    if(lineaCodigo.contains(CaracteresEsp.ASIGNA_T_DATO.getCaracter()) || lineaCodigo.contains(CaracteresEsp.ASIGNACION.getCaracter())) {
+                    if(lineaCodigo.contains(CaracteresEspeciales.ASIGNA_T_DATO.getCaracter()) || lineaCodigo.contains(CaracteresEspeciales.ASIGNACION.getCaracter())) {
                         String[] separarValorDeID = null;
                         String caracterAsignacion = "";
                         
@@ -61,10 +61,10 @@ public class Lexico {
                         /**
                          * Verificar se se esta haciendo una asignación de una constante o una variable
                          */
-                        if (lineaCodigo.contains(CaracteresEsp.ASIGNA_T_DATO.getCaracter())) {
-                            caracterAsignacion = CaracteresEsp.ASIGNA_T_DATO.getCaracter();
-                        } else if (lineaCodigo.contains(CaracteresEsp.ASIGNACION.getCaracter())) {
-                            caracterAsignacion = CaracteresEsp.ASIGNACION.getCaracter();
+                        if (lineaCodigo.contains(CaracteresEspeciales.ASIGNA_T_DATO.getCaracter())) {
+                            caracterAsignacion = CaracteresEspeciales.ASIGNA_T_DATO.getCaracter();
+                        } else if (lineaCodigo.contains(CaracteresEspeciales.ASIGNACION.getCaracter())) {
+                            caracterAsignacion = CaracteresEspeciales.ASIGNACION.getCaracter();
                         }
                         separarValorDeID = lineaCodigo.split(caracterAsignacion);
                         
@@ -93,7 +93,7 @@ public class Lexico {
                         switchTipoDato(String.valueOf(valueID));
                         
                     } else if(lineaCodigo.contains(Reservadas.OUT.getToken()) || lineaCodigo.contains(Reservadas.OUTLN.getToken())) {
-                        String[] funciones = lineaCodigo.split(CaracteresEsp.PRINT.getCaracter());
+                        String[] funciones = lineaCodigo.split(CaracteresEspeciales.PRINT.getCaracter());
                         
                         System.out.println(Arrays.toString(funciones));
                         
@@ -107,7 +107,7 @@ public class Lexico {
     
     private String hayCaracteresEspeciales(String palabra) {
         String caracter = " ";
-        for (String token : CaracteresEsp.getStrTokens()) {
+        for (String token : CaracteresEspeciales.getStrTokens()) {
             if (palabra.equals(token)) {
                 caracter = token;
             }
@@ -123,7 +123,7 @@ public class Lexico {
     
     private boolean buscarComentarios(String palabra) {
         boolean isComment = false;
-        if (palabra.startsWith(CaracteresEsp.HASH.getCaracter())) {
+        if (palabra.startsWith(CaracteresEspeciales.HASH.getCaracter())) {
             isComment = true;
         }
         return isComment;
