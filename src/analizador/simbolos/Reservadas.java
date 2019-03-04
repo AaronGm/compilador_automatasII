@@ -17,12 +17,11 @@ public enum Reservadas {
     
     VAR("var"),
     CONST("const"),
-    IF("if"),
-    ELSE("else"),
-    WHILE("while"),
     OUT("out"),
     OUTLN("outln"),
-    ELI("del");
+    DV("dv"),
+    IT("it"),
+    ;
     
     
     private final String token;

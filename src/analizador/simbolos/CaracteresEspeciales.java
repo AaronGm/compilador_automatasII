@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author aarongmx
  */
-public enum CaracteresEsp {
+public enum CaracteresEspeciales {
     
     MAS("+"),
     MENOS("-"),
@@ -30,16 +30,22 @@ public enum CaracteresEsp {
     DOS_PUNTOS(":"),
     CORCH_I("["),
     CORCH_D("]"),
-    RAIZ("^"),
+    POTENCIA("^"),
     PUNTO("."),
     DOB_COMILLA("\""),
     PRINT("->"),
+    IGUAL("=="),
+    ASIGNA_T_DATO(":="),
+    MA_QUE(">"),
+    ME_QUE("<"),
+    MAI_QUE(">="),
+    MEI_QUE("<="),
     POR("*"),
     ASIGNACION("=");
     
     private final String caracter;
 
-    private CaracteresEsp(String caracter) {
+    private CaracteresEspeciales(String caracter) {
         this.caracter = caracter;
     }
 
@@ -48,7 +54,7 @@ public enum CaracteresEsp {
     }
     
     public static List<String> getStrTokens() {
-        List<CaracteresEsp> listaTokens = Arrays.asList(CaracteresEsp.values());
+        List<CaracteresEspeciales> listaTokens = Arrays.asList(CaracteresEspeciales.values());
         ArrayList<String> strListaTokens = new ArrayList<>();
         listaTokens.forEach((tokn) -> strListaTokens.add(tokn.getCaracter()));
         return strListaTokens;
