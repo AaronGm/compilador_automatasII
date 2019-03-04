@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -46,6 +47,16 @@ public class CompilerController implements ActionListener {
             lex.getListaTokens().forEach(lista -> {
                 view.getModelTable().addRow(lista);
             });
+            
+            if (lex.getErroresLexicos().size() > 0) {
+                lex.getErroresLexicos().forEach(error -> {
+                    view.setErrConsola(error + "\n");
+                });
+            } else {
+                JOptionPane.showMessageDialog(null, "Continuando análisis sintáctico");
+            }
+            
+            
         }
 
         if (btn.equals(view.getBtnErrores())) {
