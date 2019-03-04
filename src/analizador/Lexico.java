@@ -7,6 +7,8 @@ package analizador;
 
 import analizador.simbolos.CaracteresEsp;
 import analizador.simbolos.Reservadas;
+import analizador.simbolos.TipoDato;
+import analizador.simbolos.VarConst;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,110 +19,106 @@ import java.util.Map;
  * @author aarongmx
  */
 public class Lexico {
-    private ArrayList<String[]> listaTokens;
-    private final ArrayList<String> lineaCodigo;
-    private Map<String, Object> identificadoValor;
-    private Object obj;
-    private String id;
-    private ArrayList<String> identificadores;
-    
+
+    private final ArrayList<String[]> listaTokens;
+    private final ArrayList<String> lineasDeCodigo;
+    private VarConst var;
+    private final Map<String, Object> listaDeIDSconValor;
+    private Object valueID;
+    private String nameID;
+    private final ArrayList<String> identificadores;
+    private final ArrayList<String> erroresLexicos;
+
     public Lexico(ArrayList<String> lineaCodigo) {
-        this.lineaCodigo = lineaCodigo;
+        this.lineasDeCodigo = lineaCodigo;
         listaTokens = new ArrayList<>();
-        identificadoValor = new HashMap<>();
+        listaDeIDSconValor = new HashMap<>();
         identificadores = new ArrayList<>();
+        erroresLexicos = new ArrayList<>();
     }
-    
+
     public void validarTokens() {
         // Léxico -> decir que simbolos están presentes en nuestro lenguaje
-        ArrayList<String> exp = new ArrayList<>();
-        lineaCodigo.forEach((String strLinea) -> {
-            System.out.println(strLinea);
-            
-            if (!strLinea.isEmpty()) {
-                if (isString(strLinea)) {
-                    listaTokens.add(new String[] { strLinea, "String" });
-                    exp.add(strLinea);
-                } else if(buscarComentarios(strLinea)) {
-                    listaTokens.add(new String[] { strLinea, "Comentario" });
-                    exp.add(strLinea);
-                } else {
-                    String[] splitLinea = strLinea.split(" ");
-                    //System.out.println(Arrays.toString(splitLinea));
+        lineasDeCodigo.forEach((String lineaCodigo) -> {
+
+            if (!lineaCodigo.isEmpty()) {
+                
+                if (isString(lineaCodigo)) {
+                
+                    listaTokens.add(new String[]{lineaCodigo, "String"});
+                
+                } else if (buscarComentarios(lineaCodigo)) {
                     
-                    Arrays.asList(splitLinea).forEach((String token) -> {
+                    listaTokens.add(new String[]{lineaCodigo, "Comentario"});
+                    
+                } else {
+                    
+                    if(lineaCodigo.contains(CaracteresEsp.ASIGNA_T_DATO.getCaracter()) || lineaCodigo.contains(CaracteresEsp.ASIGNACION.getCaracter())) {
+                        String[] separarValorDeID = null;
+                        String caracterAsignacion = "";
                         
-                        if (!identificadores.isEmpty()) {
-                            identificadores.forEach(identif -> {
-                                if (token.equals(identif)) {
-                                    listaTokens.add(new String[] { token, "Identificador" });
-                                    exp.add("ID");
-                                }
-                            });
+                        
+                        /**
+                         * Verificar se se esta haciendo una asignación de una constante o una variable
+                         */
+                        if (lineaCodigo.contains(CaracteresEsp.ASIGNA_T_DATO.getCaracter())) {
+                            caracterAsignacion = CaracteresEsp.ASIGNA_T_DATO.getCaracter();
+                        } else if (lineaCodigo.contains(CaracteresEsp.ASIGNACION.getCaracter())) {
+                            caracterAsignacion = CaracteresEsp.ASIGNACION.getCaracter();
                         }
+                        separarValorDeID = lineaCodigo.split(caracterAsignacion);
                         
-                        
-                        Reservadas.getTokens().forEach((String reserv) -> {
-                            if (token.equals(reserv)) {
-                                listaTokens.add(new String[] { token, "Palabra reservada" });
-                                exp.add("RESERV");
-                            }
-                        });
-                        
-                        if (splitLinea.length > 1) {
-                            boolean isId = false;
-                            if (token.equals(splitLinea[1])) {
-                                char[] chars = token.toCharArray();
-                                for (char c : chars) {
-                                    if (Character.isAlphabetic(c) | Character.isDigit(c)) {
-                                        isId = true;
-                                    }
-                                }
-                            }
-                            if (isId) {
-                                identificadores.add(token);
-                                identificadoValor.put(token, obj);
-                                listaTokens.add(new String[] { token, "Identificador" });
-                                exp.add("ID");
-                            }
-                        }
-                        
-                                                
-                        if (isString(token)) {
-                            listaTokens.add(new String[] { token, "String" });
-                            obj = String.valueOf(token);
-                            exp.add("STR");
+
+                        if (separarValorDeID.length > 1) {
+                            valueID = separarValorDeID[1];
                         }
 
-                        CaracteresEsp.getStrTokens().stream().filter((String strToken) -> (token.equals(strToken))).forEachOrdered((String _item) -> {
-                            //System.out.println(_item);
-                            listaTokens.add(new String[] { token, "Carácter especial" });
-                            exp.add("CESP");
-                        });
-
-                        if (isNumber(token)) {
-                            listaTokens.add(new String[] { token, "Int" });
-                            obj = Integer.parseInt(token);
-                            exp.add("INT");
-                        } else if (isFloat(token)) {
-                            listaTokens.add(new String[] { token, "Real" });
-                            obj = Float.parseFloat(token);
-                            exp.add("REAL");
+                        String[] creacionVarConst = separarValorDeID[0].split(hayCaracteresEspeciales(separarValorDeID[0]));
+                        
+                        buscarPalabraReservada(creacionVarConst[0]);
+                        
+                        if (creacionVarConst.length == 1) {
+                            listaTokens.add(new String[] { creacionVarConst[0], "ID" });
+                        } else {
+                            listaTokens.add(new String[] { creacionVarConst[1], "ID" });
                         }
-                    });
-                    //System.out.println(Arrays.toString(exp.toArray()));
-                    exp.clear();
+                        
+                        if (creacionVarConst.length == 3) {
+                            listaTokens.add(new String[] { creacionVarConst[2], "Tipo de dato" });
+                        }
+                        
+                        listaTokens.add(new String[] { caracterAsignacion, "Carácter de asignación" });
+                        
+                        
+                        switchTipoDato(String.valueOf(valueID));
+                        
+                    } else if(lineaCodigo.contains(Reservadas.OUT.getToken()) || lineaCodigo.contains(Reservadas.OUTLN.getToken())) {
+                        String[] funciones = lineaCodigo.split(CaracteresEsp.PRINT.getCaracter());
+                        
+                        System.out.println(Arrays.toString(funciones));
+                        
+                    } else {
+                        erroresLexicos.add(lineaCodigo);
+                    }
                 }
             }
         });
     }
     
-    private void isId(String palabra) {
-        boolean isID = false;
-        if (isReservada(palabra) == false) {
-            System.out.println(palabra);
-            listaTokens.add(new String[] { palabra, "Identificador" });
+    private String hayCaracteresEspeciales(String palabra) {
+        String caracter = " ";
+        for (String token : CaracteresEsp.getStrTokens()) {
+            if (palabra.equals(token)) {
+                caracter = token;
+            }
         }
+        return caracter;
+    }
+    
+    private void buscarPalabraReservada(String palabra) {
+        Reservadas.getTokens().stream().filter((token) -> (palabra.equals(token))).forEachOrdered((token) -> {
+            listaTokens.add(new String[] { token, "Palabra reservada" });
+        });
     }
     
     private boolean buscarComentarios(String palabra) {
@@ -131,30 +129,24 @@ public class Lexico {
         return isComment;
     }
     
-    private boolean isCharEsp(String palabra) {
-        boolean isChar = false;
-        for (String caracter : CaracteresEsp.getStrTokens()) {
-            if (palabra.equals(caracter)) {
-                isChar = true;
-            }
+    private void switchTipoDato(String palabra) {
+        palabra = palabra.trim(); // -> Limpiar espacios en blanco inicio y final
+        System.out.println(palabra);
+        if (isString(palabra)) {
+            listaTokens.add(new String[] { palabra, "String" });
         }
-        return isChar;
-    }
-    
-    private boolean isReservada(String palabra) {
-        boolean isRes = false;
-        for (String token : Reservadas.getTokens()) {
-            if (palabra.equals(token)) {
-                isRes = true;
-            }
+        
+        if (isNumber(palabra)) {
+            listaTokens.add(new String[] { palabra, "Int" });
+        } else if (isFloat(palabra)) {
+            listaTokens.add(new String[] { palabra, "Real" });
         }
-        return isRes; 
     }
     
     private boolean isString(String palabra) {
         return palabra.startsWith("\"") && palabra.endsWith("\"");
     }
-    
+
     private boolean isNumber(String cadena) {
         try {
             Integer.parseInt(cadena);
@@ -163,19 +155,29 @@ public class Lexico {
             return false;
         }
     }
-    
+
     private boolean isFloat(String cadena) {
         try {
             Float.parseFloat(cadena);
             return true;
-        }catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return false;
         }
     }
-
+    
     public ArrayList<String[]> getListaTokens() {
         return listaTokens;
     }
-    
-    
+
+    public Map<String, Object> getListaDeIDSconValor() {
+        return listaDeIDSconValor;
+    }
+
+    public ArrayList<String> getIdentificadores() {
+        return identificadores;
+    }
+
+    public ArrayList<String> getErroresLexicos() {
+        return erroresLexicos;
+    }
 }
