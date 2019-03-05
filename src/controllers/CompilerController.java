@@ -6,6 +6,7 @@
 package controllers;
 
 import analizador.Lexico;
+import analizador.Sintactico;
 
 import views.CompilerGUI;
 
@@ -14,7 +15,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -39,11 +39,13 @@ public class CompilerController implements ActionListener {
         if (btn.equals(view.getBtnCompilar())) {
             analizarTextPane(); // Separa las lineas leidas en el panel
             view.getModelTable().setRowCount(0);
+            view.clearConsola();
             
             Lexico lex = new Lexico(lineasCodigo);
-            
+//            Sintactico sintactico = new Sintactico();
             lex.validarTokens();
             
+            // Agregar tokens a la tabla
             lex.getListaTokens().forEach(lista -> {
                 view.getModelTable().addRow(lista);
             });
@@ -52,8 +54,6 @@ public class CompilerController implements ActionListener {
                 lex.getErroresLexicos().forEach(error -> {
                     view.setErrConsola(error + "\n");
                 });
-            } else {
-                JOptionPane.showMessageDialog(null, "Continuando análisis sintáctico");
             }
             
             

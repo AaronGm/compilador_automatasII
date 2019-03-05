@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
@@ -17,12 +15,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -139,7 +135,7 @@ public class CompilerGUI extends JFrame {
     }
     
     private void initPnlDer() {
-        pnlDer.setPreferredSize(new Dimension(460, 0));
+        pnlDer.setPreferredSize(new Dimension(650, 0));
         pnlDer.add(BorderLayout.CENTER, tpConsola);
     }
     
@@ -209,6 +205,10 @@ public class CompilerGUI extends JFrame {
     public void setOutConsola(String out) {
         tpConsola.setForeground(Color.white);
         this.tpConsola.setText(out);
+    }
+    
+    public void clearConsola() {
+        tpConsola.setText("");
     }
     
     public void setErrConsola(String err) {
