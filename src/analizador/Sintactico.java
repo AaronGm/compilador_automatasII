@@ -5,13 +5,18 @@
  */
 package analizador;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author aarongmx
  */
 public class Sintactico {
+    private ArrayList<String> listaLexico;
     // Sintactico -> Concordancia o jerárquia de expresiones
-    
+    public Sintactico(ArrayList<String> listaLexico) {
+        this.listaLexico = listaLexico;
+    }
     
     
 }
