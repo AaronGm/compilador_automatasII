@@ -106,8 +106,10 @@ public class Lexico {
                         }
                         
                         if (isDeclareTD) {
-                            addID(td);
+                            addTD(td);
                         }
+                        
+                        listaTokens.add(new String[] { caracterAsignacion, "Carácter de asignación" });
                         
                         switchTipoDato(strValor);
                     }
