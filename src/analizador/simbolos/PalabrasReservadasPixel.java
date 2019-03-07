@@ -23,23 +23,34 @@ public class PalabrasReservadasPixel implements PalabrasReservadas {
         return token.startsWith("\"") && token.endsWith("\"");
     }
     
+    public boolean esNumeroEntero(String token) {
+        boolean esNumeroEntero = false;
+        try {
+            Integer.parseInt(token);
+            esNumeroEntero = true;
+        } catch (NumberFormatException e) {
+        }
+        return esNumeroEntero;
+    }
+    
+    public boolean esNumeroReal(String token) {
+        boolean esNumeroReal = false;
+        try {
+            Float.parseFloat(token);
+            esNumeroReal = true;
+        } catch (NumberFormatException e) {
+        }
+        return esNumeroReal;
+    }
+    
     public boolean isDataType(String token) {
         boolean isTD = false;
         for (String tipoDato : TIPOS_DATO) {
             if(token.equals(tipoDato)) {
                 isTD = true;
-                listaTokens.add(new String[] { token, "Tipo Dato" });
             }
         }
         return isTD;
-    }
-    
-    public void esTipoDato(String token) {
-        for (String tipoDato : TIPOS_DATO) {
-            if(token.equals(tipoDato)) {
-                listaTokens.add(new String[] { token, "Tipo Dato" });
-            }
-        }
     }
     
     public boolean isReservedWord(String token) {
@@ -47,21 +58,30 @@ public class PalabrasReservadasPixel implements PalabrasReservadas {
         for (String palabraReservada : PALABRAS_RESERVADAS) {
             if (token.equals(palabraReservada)) {
                 isReservedWord = true;
-                listaTokens.add(new String[] { token, "Palabra reservada" });
             }
         }
         return isReservedWord;
     }
     
-    public void esPalabraReservada(String token) {
-        for (String palabraReservada : PALABRAS_RESERVADAS) {
-            if (token.equals(palabraReservada)) {
-                listaTokens.add(new String[] { token, "Palabra reservada" });
-            }
+    public void agregaTipoDato(String token) {
+        listaTokens.add(new String[] { token, "Tipo Dato" });
+    }
+    
+    public void agregarPalabraReservada(String token) {
+        listaTokens.add(new String[] { token, "Palabra reservada" });
+    }
+    
+    public void buscaTipoDatoPorValor(String token) {
+        if (esCadena(token)) {
+            listaTokens.add(new String[]{token, "String"});
+        } else if (esNumeroEntero(token)) {
+            listaTokens.add(new String[]{token, "Int"});
+        } else if (esNumeroEntero(token)) {
+            listaTokens.add(new String[]{token, "Real"});
         }
     }
 
-    private String nombreTipoDato(String tipoDato) {
+    private String abbrTipoDatoANombreTipoDato(String tipoDato) {
         String nombre;
         switch (tipoDato) {
             case STR:
@@ -75,10 +95,6 @@ public class PalabrasReservadasPixel implements PalabrasReservadas {
                 break;
         }
         return nombre;
-    }
-    
-    public void addTipoDato(String token) {
-        listaTokens.add(new String[] { token, "Tipo de Dato" });
     }
     
     public ArrayList<String[]> getListaTokens() {

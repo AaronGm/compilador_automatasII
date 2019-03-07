@@ -6,9 +6,7 @@
 package analizador;
 
 import analizador.simbolos.CaracterEspecial;
-import analizador.simbolos.CaracteresEspeciales;
 import analizador.simbolos.PalabrasReservadas;
-import analizador.simbolos.Reservadas;
 import analizador.simbolos.VarConst;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,7 +68,11 @@ public class Lexico {
                         String tipoID = arrDefinicionVC[0];
                         int ultimoEl = arrDefinicionVC.length - 1;
                         
-                        addRV(tipoID);
+                        if (isID(tipoID)) {
+                            addID(tipoID);
+                        } else {
+                            addRV(tipoID);
+                        }
 
                         if(arrDefinicionVC[0].equals(PalabrasReservadas.VAR) || arrDefinicionVC[0].equals(PalabrasReservadas.CONST)) {
                             // Creación de una variable o constante
@@ -91,16 +93,12 @@ public class Lexico {
                             }
                              
                             
-                        } else if(isID(arrDefinicionVC[0])) {
-                            // Reasignación de una variable
-                            addID(arrDefinicionVC[0]);
-//                            System.out.println(arrDefinicionVC[0] + " Es reasignado");
-                        }else {
+                        } else {
                             if (arrDefinicionVC[0].startsWith(PalabrasReservadas.VAR)) {
                                 addErrLex("La definición de la variable: " + arrDefinicionVC[1] + " es incorrecta...");
                             } else if (arrDefinicionVC[0].startsWith(PalabrasReservadas.CONST)) {
                                 addErrLex("La definición de la constante: " + arrDefinicionVC[1] + " es incorrecta...");
-                            } else {
+                            } else if (!isID(arrDefinicionVC[0])) {
                                 addErrLex("El identificador: " + arrDefinicionVC[0] + " debe definirse antes de usarse...");
                             }
                         }
@@ -111,34 +109,30 @@ public class Lexico {
                         
                         listaTokens.add(new String[] { caracterAsignacion, "Carácter de asignación" });
                         
-                        switchTipoDato(strValor);
+                        var = new VarConst(nameID, strValor, switchTipoDato(strValor));
+                    } else if(lineaCodigo.startsWith(PalabrasReservadas.OUT) || lineaCodigo.startsWith(PalabrasReservadas.OUTLN)) {
+                        if(lineaCodigo.contains("(") && lineaCodigo.endsWith(")")) {
+                            String lCod = lineaCodigo.replace(")", "").trim();
+                            String[] arrOut = lCod.split("\\(");
+                            addRV(arrOut[0].trim());
+                            listaTokens.add(new String[]{ "(", "Carácter especial" });
+                            String contenido = getContentBetween(lineaCodigo, "(", ")");
+                            
+                            System.out.println(contenido.contains("+"));
+                            
+                            
+                            listaTokens.add(new String[]{ ")", "Carácter especial" });
+//                            System.out.println(Arrays.toString(arrOut));
+                        }
                     }
                 }
             }
-//            expresiones.add(expresion);
-        });
-//        identificadores.forEach(System.out::println);
-    }
-    
-    private String hayCaracteresEspeciales(String palabra) {
-        String caracter = " ";
-        for (String token : CaracteresEspeciales.getStrTokens()) {
-            if (palabra.equals(token)) {
-                caracter = token;
-            }
-        }
-        return caracter;
-    }
-    
-    private void buscarPalabraReservada(String palabra) {
-        Reservadas.getTokens().stream().filter((token) -> (palabra.equals(token))).forEachOrdered((token) -> {
-            listaTokens.add(new String[] { token, "Palabra reservada" });
         });
     }
     
     private boolean isDataType(String word) {
         boolean isDtType = false;
-        for (String tipoDato : PalabrasReservadas.tipoDato) {
+        for (String tipoDato : PalabrasReservadas.TIPOS_DATO) {
             if (word.equals(tipoDato)) {
                 isDtType = true;
             }
@@ -148,13 +142,13 @@ public class Lexico {
     
     private boolean buscarComentarios(String palabra) {
         boolean isComment = false;
-        if (palabra.startsWith(CaracteresEspeciales.HASH.getCaracter())) {
-            isComment = true;
-        }
+//        if (palabra.startsWith(CaracteresEspeciales.HASH.getCaracter())) {
+//            isComment = true;
+//        }
         return isComment;
     }
     
-    private void switchTipoDato(String palabra) {
+    private String switchTipoDato(String palabra) {
         palabra = palabra.trim(); // -> Limpiar espacios en blanco inicio y final
         String tipoDato = "";
         if (isString(palabra)) {
@@ -168,6 +162,7 @@ public class Lexico {
         }
         
         listaTokens.add(new String[] { palabra, tipoDato });
+        return tipoDato;
     }
 
     private boolean isID(String palabra) {
@@ -180,16 +175,15 @@ public class Lexico {
         return isID;
     }
     
-    private boolean isTD(String palabra) {
-        boolean isTD = false;
-        for (String t_dato : PalabrasReservadas.tipoDato) {
-            if (palabra.equals(t_dato)) {
-                isTD = true;
-            }
+    private String getContentBetween(String inp, String ini, String fin) {
+        inp = inp.replace(fin, "").trim();
+        String[] content = inp.split("\\" + ini);
+        if (content.length == 2) {
+            content = content[1].split("\\" + fin);
         }
-        return isTD;
+        return Arrays.toString(content);
     }
-
+    
     private boolean isString(String palabra) {
         return palabra.startsWith("\"") && palabra.endsWith("\"");
     }

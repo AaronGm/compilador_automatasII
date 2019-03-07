@@ -18,6 +18,16 @@ public class CaracteresEspecialesPixel implements CaracterEspecial {
         this.listaTokens = listaTokens;
     }
     
+    public boolean isSpecial(String token) {
+        boolean isSpecial = false;
+        for (String caracterEspecial : CARACTERES_ESPECIALES) {
+            if (token.equals(caracterEspecial)) {
+                isSpecial = true;
+            }
+        }
+        return isSpecial;
+    }
+    
     public void esAsignacion(String token) {
         for (String asignacion : ASSIGN) {
             if (token.equals(asignacion)) {
@@ -34,10 +44,31 @@ public class CaracteresEspecialesPixel implements CaracterEspecial {
         }
     }
     
+    public boolean isMath(String token) {
+        boolean isMath = false;
+        for (String math : MATHS) {
+            if (token.equals(math)) {
+                isMath = true;
+            }
+        }
+        return isMath;
+    }
+    
+    public void agregarMath(String token) {
+        listaTokens.add(new String[] { token, "Carácter Matemático" });
+    }
+    
+    public void agregarEspecial(String token) {
+        listaTokens.add(new String[] { token, "Carácter Especial" });
+    }
+    
     public void abreCierraParentesis(String token) {
-        if (token.contains(CaracterEspecial.PARENTESIS_I)) {
+        String[] contenidoParentesis = {};
+        if (token.endsWith("\\" + PARENTESIS_D)) {
+            System.out.println(token);
             
         }
+        
     }
     
 }

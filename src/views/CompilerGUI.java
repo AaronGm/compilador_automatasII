@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.InputEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -27,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -92,7 +94,9 @@ public class CompilerGUI extends JFrame {
         menuBar = new JMenuBar();
         menu = new JMenu("Archivo");
         itemAbrir = new JMenuItem("Abrir");
+        itemAbrir.setAccelerator(KeyStroke.getKeyStroke('O', InputEvent.CTRL_DOWN_MASK));
         itemGuardar = new JMenuItem("Guardar");
+        itemGuardar.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
         
         fileChooser = new JFileChooser();
         fileChooser.setFileFilter(new FileNameExtensionFilter("Scripts pixel", "px"));
@@ -156,6 +160,7 @@ public class CompilerGUI extends JFrame {
         
         menu.add(itemAbrir);
         menu.add(itemGuardar);
+
         this.setJMenuBar(menuBar);
     }
     

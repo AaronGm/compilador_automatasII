@@ -12,9 +12,12 @@ package analizador.simbolos;
 public class VarConst {
     private String name;
     private Object value;
-    private TipoDato type;
+    private String type;
 
-    public VarConst(String name, Object value, TipoDato type) {
+    public VarConst() {
+    }
+    
+    public VarConst(String name, Object value, String type) {
         this.name = name;
         this.value = value;
         this.type = type;
@@ -36,15 +39,17 @@ public class VarConst {
         this.value = value;
     }
 
-    public TipoDato getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(TipoDato type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    
-    
+    @Override
+    public String toString() {
+        return "VarConst{" + "name=" + name + ", value=" + value + ", type=" + type + '}';
+    }
 }
 

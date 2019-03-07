@@ -20,8 +20,7 @@ public enum Reservadas {
     OUT("out"),
     OUTLN("outln"),
     DV("dv"),
-    IT("it"),
-    ;
+    IT("it");
     
     
     private final String token;
@@ -40,8 +39,5 @@ public enum Reservadas {
         listaTokens.forEach((tokn) -> strListaTokens.add(tokn.getToken()));
         return strListaTokens; 
     }
-    
-    
-    
     
 }

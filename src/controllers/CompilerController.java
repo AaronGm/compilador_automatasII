@@ -69,10 +69,10 @@ public class CompilerController implements ActionListener {
                 try {
                     view.getFileChooser().showSaveDialog(view);
                     File file = view.getFileChooser().getSelectedFile();
-                    try (FileWriter fw = new FileWriter(file + ".px")) {
+                    try (FileWriter fw = new FileWriter(file)) {
                         fw.write(view.getTpEditor().getText());
                     }
-                    JOptionPane.showConfirmDialog(null, "Archivo guardado correctamente!");
+                    JOptionPane.showMessageDialog(null, "Archivo guardado correctamente!");
                 } catch(HeadlessException | IOException e) {
                     System.out.println(e.getMessage());
                 }
