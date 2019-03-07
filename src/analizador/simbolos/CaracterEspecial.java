@@ -22,8 +22,11 @@ public interface CaracterEspecial {
     String MENI_QUE = "<=";
     String ASIGNACION_NOR = "=";
     String ASIGNACION_INF = ":=";
+    String PARENTESIS_I = "\\(";
+    String PARENTESIS_D = "\\)";
+    String HASH = "#";
     
-    String[] caracteresEspeciales = {
+    String[] CARACTERES_ESPECIALES = {
         MAS,
         MENOS,
         PRINT,
@@ -33,6 +36,25 @@ public interface CaracterEspecial {
         MAY_QUE,
         MAYI_QUE,
         MEN_QUE,
+        MENI_QUE,
+        ASIGNACION_NOR,
+        ASIGNACION_INF,
+        HASH
+    };
+    
+    String[] MATHS = {
+        MAS,
+        MENOS,
+        RAIZ,
+        EXPONENTE,
+        MAY_QUE,
+        MAYI_QUE,
+        MEN_QUE,
         MENI_QUE
+    };
+    
+    String[] ASSIGN = {
+        ASIGNACION_INF,
+        ASIGNACION_NOR
     };
 }

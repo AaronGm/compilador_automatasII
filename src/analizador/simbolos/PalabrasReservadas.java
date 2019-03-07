@@ -17,15 +17,19 @@ public interface PalabrasReservadas {
     String CONST = "const";
     String OUT = "out";
     String OUTLN = "outln";
+    String IG = "ig";
+    String DV = "dv";
     
-    String[] palabrasReservadas = {
+    String[] PALABRAS_RESERVADAS = {
         VAR,
         CONST,
         OUT,
-        OUTLN
+        OUTLN,
+        IG,
+        DV
     };
     
-    String[] tipoDato = {
+    String[] TIPOS_DATO = {
         STR,
         INT,
         REAL
