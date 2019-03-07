@@ -17,13 +17,18 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -32,6 +37,14 @@ import javax.swing.table.DefaultTableModel;
  * @author aarongmx
  */
 public class CompilerGUI extends JFrame {
+    
+    private JMenuBar menuBar;
+    private JMenu menu;
+    private JMenuItem itemAbrir;
+    private JMenuItem itemGuardar;
+    
+    private JFileChooser fileChooser;
+    
     private JPanel pnlRoot;
     
     private JPanel pnlHead;
@@ -76,6 +89,14 @@ public class CompilerGUI extends JFrame {
     }
 
     private void initComponents() {
+        menuBar = new JMenuBar();
+        menu = new JMenu("Archivo");
+        itemAbrir = new JMenuItem("Abrir");
+        itemGuardar = new JMenuItem("Guardar");
+        
+        fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Scripts pixel", "px"));
+        
         pnlRoot = (JPanel) getContentPane();
         
         pnlHead = new JPanel();
@@ -116,10 +137,26 @@ public class CompilerGUI extends JFrame {
         scrollConsola = new JScrollPane(tpConsola);
         
         estilosJScrollPanes(scrollConsola, scrollEditor, scrollTabla);
+        
+        initMenu();
+        
         initPnlHead();
         initPnlDer();
         initPnlBajo();
         initTablaTokens();
+    }
+    
+    private void initMenu() {
+        menuBar.add(menu);
+        menuBar.setBackground(new Color(0x2196F3));
+        menuBar.setPreferredSize(new Dimension(0, 30));
+        menuBar.setBorder(null);
+        
+        menu.setForeground(Color.white);
+        
+        menu.add(itemAbrir);
+        menu.add(itemGuardar);
+        this.setJMenuBar(menuBar);
     }
     
     private void initPnlHead() {
@@ -215,7 +252,18 @@ public class CompilerGUI extends JFrame {
         tpConsola.setForeground(new Color(0xf88279));
         this.tpConsola.setText(tpConsola.getText() + err);
     }
-    
+
+    public JMenuItem getItemAbrir() {
+        return itemAbrir;
+    }
+
+    public JMenuItem getItemGuardar() {
+        return itemGuardar;
+    }
+
+    public JFileChooser getFileChooser() {
+        return fileChooser;
+    }
     
     private void estilosJScrollPanes(JScrollPane... scrollpanes) {
         Arrays.asList(scrollpanes).forEach(scrollpane -> {

@@ -5,16 +5,23 @@
  */
 package controllers;
 
-import analizador.Lexico;
-import analizador.Sintactico;
+import analizador.LexicoV2;
+import java.awt.HeadlessException;
 
 import views.CompilerGUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -30,6 +37,47 @@ public class CompilerController implements ActionListener {
         lineasCodigo = new ArrayList<>();
         this.view.getBtnCompilar().addActionListener(this);
         this.view.getBtnErrores().addActionListener(this);
+        this.view.getItemAbrir().addActionListener(accionesMenu());
+        this.view.getItemGuardar().addActionListener(accionesMenu());
+    }
+    
+    
+    private ActionListener accionesMenu() {
+        return (ActionEvent evt) -> {
+            JMenuItem btnItem = (JMenuItem) evt.getSource();
+            
+            if (btnItem.equals(view.getItemAbrir())) {
+                try{
+                    String texto = null;
+                    view.getFileChooser().showOpenDialog(view);
+                    File file = view.getFileChooser().getSelectedFile();
+                    if (file != null) {
+                        view.getTpEditor().setText("");
+                        FileReader reader = new FileReader(file);
+                        try (BufferedReader read = new BufferedReader(reader)) {
+                            while ((texto = read.readLine()) != null) {
+                                view.getTpEditor().setText(view.getTpEditor().getText() + texto + "\n");
+                            }
+                        }
+                    }
+                } catch(HeadlessException | IOException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+            
+            if (btnItem.equals(view.getItemGuardar())) {
+                try {
+                    view.getFileChooser().showSaveDialog(view);
+                    File file = view.getFileChooser().getSelectedFile();
+                    try (FileWriter fw = new FileWriter(file + ".px")) {
+                        fw.write(view.getTpEditor().getText());
+                    }
+                    JOptionPane.showConfirmDialog(null, "Archivo guardado correctamente!");
+                } catch(HeadlessException | IOException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        };
     }
 
     @Override
@@ -40,21 +88,28 @@ public class CompilerController implements ActionListener {
             analizarTextPane(); // Separa las lineas leidas en el panel
             view.getModelTable().setRowCount(0);
             view.clearConsola();
+            LexicoV2 lex = new LexicoV2(lineasCodigo);
+            lex.analizarLineasCodigo();
             
-            Lexico lex = new Lexico(lineasCodigo);
-//            Sintactico sintactico = new Sintactico();
-            lex.validarTokens();
-            
-            // Agregar tokens a la tabla
-            lex.getListaTokens().forEach(lista -> {
+            lex.getListaTokens().forEach((String[] lista) -> {
                 view.getModelTable().addRow(lista);
             });
             
-            if (lex.getErroresLexicos().size() > 0) {
-                lex.getErroresLexicos().forEach(error -> {
-                    view.setErrConsola(error + "\n");
-                });
-            }
+            
+//            Lexico lex = new Lexico(lineasCodigo);
+////            Sintactico sintactico = new Sintactico();
+//            lex.validarTokens();
+//            
+//            // Agregar tokens a la tabla
+//            lex.getListaTokens().forEach(lista -> {
+//                view.getModelTable().addRow(lista);
+//            });
+//            
+//            if (lex.getErroresLexicos().size() > 0) {
+//                lex.getErroresLexicos().forEach(error -> {
+//                    view.setErrConsola(error + "\n");
+//                });
+//            }
             
             
         }
