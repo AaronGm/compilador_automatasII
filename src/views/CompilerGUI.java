@@ -255,7 +255,7 @@ public class CompilerGUI extends JFrame {
     
     public void setErrConsola(String err) {
         tpConsola.setForeground(new Color(0xf88279));
-        this.tpConsola.setText(tpConsola.getText() + err);
+        this.tpConsola.setText(tpConsola.getText() + err + "\n");
     }
 
     public JMenuItem getItemAbrir() {

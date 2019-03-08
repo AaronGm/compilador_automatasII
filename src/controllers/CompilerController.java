@@ -6,6 +6,7 @@
 package controllers;
 
 import analizador.LexicoV2;
+import analizador.Sintactico;
 import java.awt.HeadlessException;
 
 import views.CompilerGUI;
@@ -89,29 +90,24 @@ public class CompilerController implements ActionListener {
             view.getModelTable().setRowCount(0);
             view.clearConsola();
             LexicoV2 lex = new LexicoV2(lineasCodigo);
+            Sintactico sin = new Sintactico();
             lex.analizarLineasCodigo();
             
-            lex.getListaTokens().forEach((String[] lista) -> {
-                view.getModelTable().addRow(lista);
-            });
             
             
-//            Lexico lex = new Lexico(lineasCodigo);
-////            Sintactico sintactico = new Sintactico();
-//            lex.validarTokens();
-//            
-//            // Agregar tokens a la tabla
-//            lex.getListaTokens().forEach(lista -> {
-//                view.getModelTable().addRow(lista);
-//            });
-//            
-//            if (lex.getErroresLexicos().size() > 0) {
-//                lex.getErroresLexicos().forEach(error -> {
-//                    view.setErrConsola(error + "\n");
-//                });
-//            }
+            if(!lex.getListaTokens().isEmpty() && lex.getErrLex().isEmpty()) {
+                lex.getListaTokens().forEach((String[] lista) -> {
+                    view.getModelTable().addRow(lista);
+                });
+                sin.setListaLexico(lex.getArbolS());
+                sin.analizarArbol();
+            } else {
+                lex.getErrLex().forEach(err -> {
+                    view.setErrConsola(err);
+                });
+            }
             
-            
+                        
         }
 
         if (btn.equals(view.getBtnErrores())) {
