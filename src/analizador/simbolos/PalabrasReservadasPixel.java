@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class PalabrasReservadasPixel implements PalabrasReservadas {
 
-    private ArrayList<String[]> listaTokens;
+    private final ArrayList<String[]> listaTokens;
 
     public PalabrasReservadasPixel(ArrayList<String[]> listaTokens) {
         this.listaTokens = listaTokens;

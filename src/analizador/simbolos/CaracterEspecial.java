@@ -13,7 +13,7 @@ public interface CaracterEspecial {
     String MAS = "+";
     String MENOS = "-";
     String PRINT = "->";
-    String EXPONENTE = "^";
+    String EXPONENTE = "**";
     String RAIZ = "_";
     String PUNTO = ".";
     String MAY_QUE = ">";

@@ -56,14 +56,13 @@ public class Lexico {
                     expresion += lineaCodigo;
                 } else {
                     if (lineaCodigo.contains(CaracterEspecial.ASIGNACION_INF) || lineaCodigo.contains(CaracterEspecial.ASIGNACION_NOR)) {
+                        
                         String caracterAsignacion = lineaCodigo.contains(CaracterEspecial.ASIGNACION_INF) ? CaracterEspecial.ASIGNACION_INF: CaracterEspecial.ASIGNACION_NOR;
                         String[] separaIdValor = lineaCodigo.split(caracterAsignacion);
                         String definicionVC = separaIdValor[0].trim();
                         String strValor = separaIdValor[separaIdValor.length - 1].trim();
-                        boolean isDeclareTD = false;
-                        String td = null;
-                        
-
+                        boolean isDeclareTipoDato = false;
+                        String tipoDato = null;
                         String[] arrDefinicionVC = definicionVC.split(" ");
                         String tipoID = arrDefinicionVC[0];
                         int ultimoEl = arrDefinicionVC.length - 1;
@@ -82,8 +81,8 @@ public class Lexico {
                             } else {
                                 if (arrDefinicionVC.length == 3 && isDataType(arrDefinicionVC[ultimoEl])) {
                                     nameID = arrDefinicionVC[1].trim();
-                                    isDeclareTD = true;
-                                    td = arrDefinicionVC[2].trim();
+                                    isDeclareTipoDato = true;
+                                    tipoDato = arrDefinicionVC[2].trim();
                                     
                                 } else if (caracterAsignacion.equals(CaracterEspecial.ASIGNACION_INF)) {
                                     nameID = arrDefinicionVC[1].trim();
@@ -103,8 +102,8 @@ public class Lexico {
                             }
                         }
                         
-                        if (isDeclareTD) {
-                            addTD(td);
+                        if (isDeclareTipoDato) {
+                            addTD(tipoDato);
                         }
                         
                         listaTokens.add(new String[] { caracterAsignacion, "Carácter de asignación" });
@@ -118,11 +117,7 @@ public class Lexico {
                             listaTokens.add(new String[]{ "(", "Carácter especial" });
                             String contenido = getContentBetween(lineaCodigo, "(", ")");
                             
-                            System.out.println(contenido.contains("+"));
-                            
-                            
                             listaTokens.add(new String[]{ ")", "Carácter especial" });
-//                            System.out.println(Arrays.toString(arrOut));
                         }
                     }
                 }
@@ -142,9 +137,9 @@ public class Lexico {
     
     private boolean buscarComentarios(String palabra) {
         boolean isComment = false;
-//        if (palabra.startsWith(CaracteresEspeciales.HASH.getCaracter())) {
-//            isComment = true;
-//        }
+        if (palabra.startsWith(CaracterEspecial.HASH)) {
+            isComment = true;
+        }
         return isComment;
     }
     

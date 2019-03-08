@@ -5,7 +5,9 @@
  */
 package analizador;
 
+import analizador.simbolos.VarConst;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  *
@@ -13,10 +15,34 @@ import java.util.ArrayList;
  */
 public class Sintactico {
     private ArrayList<String> listaLexico;
+    private Map<String, VarConst> mapaVarConst;
     // Sintactico -> Concordancia o jerárquia de expresiones
+    
+    public Sintactico() {}
+    
     public Sintactico(ArrayList<String> listaLexico) {
         this.listaLexico = listaLexico;
     }
     
-    
+    public void analizarArbol() {
+        for (String string : listaLexico) {
+            System.out.println(string);
+        }
+    }
+
+    public void setListaLexico(ArrayList<String> listaLexico) {
+        this.listaLexico = listaLexico;
+    }
+
+    public ArrayList<String> getListaLexico() {
+        return listaLexico;
+    }
+
+    public Map<String, VarConst> getMapaVarConst() {
+        return mapaVarConst;
+    }
+
+    public void setMapaVarConst(Map<String, VarConst> mapaVarConst) {
+        this.mapaVarConst = mapaVarConst;
+    }
 }
